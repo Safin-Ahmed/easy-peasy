@@ -16,7 +16,6 @@ const CreateProject = ({ open, handleClose }) => {
       id: shortid.generate(),
       title: titleInputRef.current.value,
       description: descriptionRef.current.value,
-      tasks: {},
     };
 
     addProject(projectData);

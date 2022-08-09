@@ -7,6 +7,7 @@ import Project from "./Project";
 
 const ProjectList = () => {
   const projects = useStoreState((state) => state.projects);
+  const tasks = useStoreState((state) => state.tasks);
   const [showProjectForm, setShowProjectForm] = useState(false);
   const openHandler = () => {
     setShowProjectForm(true);
@@ -32,8 +33,8 @@ const ProjectList = () => {
           <>
             <Grid container spacing={2}>
               {projects.map((project, i) => (
-                <Grid item xs={6} md={3} key={`project${i}`}>
-                  <Project project={project} />
+                <Grid item xs={6} md={4} key={`project${i}`}>
+                  <Project project={project} tasks={tasks} />
                 </Grid>
               ))}
             </Grid>

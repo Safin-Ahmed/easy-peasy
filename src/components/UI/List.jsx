@@ -12,21 +12,14 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import CustomListItem from "./ListItem";
 
 export default function CustomList({ tasks, projectId }) {
-  const primaryTasks = tasks.filter((item) => item.parent === "0");
-
   return (
     <List
-      sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+      sx={{ width: "100%", maxWidth: "100%", bgcolor: "background.paper" }}
       component="nav"
       aria-labelledby="nested-list-subheader"
     >
-      {primaryTasks.map((item) => (
-        <CustomListItem
-          projectId={projectId}
-          key={item.id}
-          task={item}
-          tasks={tasks}
-        />
+      {tasks.map((item) => (
+        <CustomListItem projectId={projectId} key={item.id} task={item} />
       ))}
     </List>
   );

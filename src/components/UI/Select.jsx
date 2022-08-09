@@ -5,7 +5,13 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
-export default function CustomSelect({ label, options, value, setValue }) {
+export default function CustomSelect({
+  label,
+  options,
+  value,
+  setValue,
+  isMultiple,
+}) {
   const handleChange = (event) => {
     setValue(event.target.value);
   };
@@ -14,7 +20,13 @@ export default function CustomSelect({ label, options, value, setValue }) {
     <Box sx={{ minWidth: 120 }}>
       <FormControl sx={{ my: 1 }} fullWidth>
         <InputLabel id="demo-simple-select-label">{label}</InputLabel>
-        <Select id={label} value={value} label={label} onChange={handleChange}>
+        <Select
+          multiple={isMultiple}
+          id={label}
+          value={value}
+          label={label}
+          onChange={handleChange}
+        >
           {options.length === 0 && <p>No Users Found</p>}
           {options.map((option) => (
             <MenuItem key={option.value} value={option.value}>

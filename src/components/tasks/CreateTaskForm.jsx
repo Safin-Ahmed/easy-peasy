@@ -9,51 +9,89 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
-const CreateTaskForm = ({ open, handleClose, projectId, parent = "0" }) => {
+const CreateTaskForm = ({
+  open,
+  handleClose,
+  projectId,
+  parent = "0",
+  isEdit = false,
+  task,
+}) => {
   const addTask = useStoreActions((actions) => actions.addTask);
-  const [status, setStatus] = useState("");
-  const [user, setUser] = useState("");
+  const editTask = useStoreActions((actions) => actions.editTask);
+  const [status, setStatus] = useState(isEdit ? task.status : "");
+  const [user, setUser] = useState(isEdit ? task.assignee : []);
+  const [title, setTitle] = useState(isEdit ? task.title : "");
+  const [description, setDescription] = useState(
+    isEdit ? task.description : ""
+  );
+  const [date, setDate] = useState(isEdit ? task.deadline : "");
   const titleInputRef = useRef();
   const descriptionInputRef = useRef();
   const dateInputRef = useRef();
   const addTaskHandler = () => {
     const taskObject = {
       parent: parent,
+      projectId,
       id: shortid.generate(),
-      title: titleInputRef.current.value,
-      description: descriptionInputRef.current.value,
+      title: title,
+      description: description,
       status: status,
       assignee: user,
-      deadline: dateInputRef.current.value,
+      deadline: date,
     };
 
-    addTask({ projectId, task: taskObject });
-    titleInputRef.current.value = "";
-    descriptionInputRef.current.value = "";
-    dateInputRef.current.value = "";
-    setUser("");
+    addTask(taskObject);
+    setTitle("");
+    setDescription("");
+    setDate("");
+    setUser([]);
     setStatus("");
     handleClose();
   };
+
+  const updateTask = () => {
+    const taskObject = {
+      parent: task.parent,
+      id: task.id,
+      title: title,
+      description: description,
+      status: status,
+      assignee: user,
+      deadline: date,
+    };
+    editTask(taskObject);
+    setTitle("");
+    setDescription("");
+    setDate("");
+    setUser([]);
+    setStatus("");
+    handleClose();
+  };
+
   const users = useStoreState((state) => state.users);
   const assigneeOptions = users.map((user) => ({ name: user, value: user }));
   return (
     <CustomModal open={open} handleClose={handleClose}>
-      <Typography variant="h6">Create Task</Typography>
+      <Typography variant="h6">
+        {isEdit ? "Edit Task" : "Create Task"}
+      </Typography>
       <TextField
         sx={{ my: 2, width: "100%" }}
         id="outlined-basic"
+        value={title}
         label="Title"
         variant="outlined"
-        inputRef={titleInputRef}
+        onChange={(e) => setTitle(e.target.value)}
       />
       <TextField
         sx={{ my: 2, width: "100%" }}
         multiline
         id="outlined-basic"
-        label="Descriptions"
+        value={description}
+        label="Description"
         variant="outlined"
-        inputRef={descriptionInputRef}
+        onChange={(e) => setDescription(e.target.value)}
       />
 
       <CustomSelect
@@ -61,8 +99,8 @@ const CreateTaskForm = ({ open, handleClose, projectId, parent = "0" }) => {
         value={status}
         setValue={setStatus}
         options={[
-          { name: "Completed", value: "completed" },
           { name: "Pending", value: "pending" },
+          { name: "Completed", value: "completed" },
         ]}
       />
 
@@ -71,16 +109,21 @@ const CreateTaskForm = ({ open, handleClose, projectId, parent = "0" }) => {
         setValue={setUser}
         label="Assignee"
         options={assigneeOptions}
+        isMultiple={true}
       />
-      <input ref={dateInputRef} type="date" />
+      <input
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+        type="date"
+      />
       <br />
       <Button
-        onClick={addTaskHandler}
+        onClick={isEdit ? updateTask : addTaskHandler}
         sx={{ mt: 4 }}
         variant="contained"
         color="success"
       >
-        Create Task
+        {isEdit ? "Update Task" : "Create Task"}
       </Button>
     </CustomModal>
   );
